@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>Example Strava Login Results</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+        $(function() {
+          $('a#test').bind('click', function() {
+            $.getJSON('/button_callback',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+</script>
+</head>
+<body>
+<h1>Authorization Results</h1>
+<p>
+	Hi, <strong>{{ athlete.firstname }}</strong>.
+
+  Your access token:
+  <pre>{{ access_token|tojson(indent=2) }}</pre>
+</p>
+<div class='container'>
+		<form>
+			<a href=# id=test><button class='btn btn-default'>Start Tracker</button></a>
+		</form>
+</div>
+</body>
+</html>
