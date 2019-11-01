@@ -24,5 +24,5 @@ Run the Flask server, specifying the path to this file in your `APP_SETTINGS`
 environment var:
 
 ```
-$ APP_SETTINGS=settings.cfg python server.py
+$ APP_SETTINGS=settings.cfg python3 server.py
 ```
