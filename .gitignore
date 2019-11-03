@@ -1,2 +1,3 @@
 # Don't include config files with secrets.
 *.cfg
+*.swp
