@@ -38,7 +38,7 @@ class Tracker:
 
     def save_status(self):
         save_obj = {'start_date' : self.start_date, 'next_week' : self.next_week, 
-                'week_streak' : self.week_streak, 'num_activites' : self.num_activites}
+                'week_streak' : self.week_streak, 'num_activities' : self.num_activities}
         with open(self.save_file_, 'wb') as save_file:
             pickel.dump(save_obj, save_file)
 
@@ -57,7 +57,7 @@ class Tracker:
 
     def update(self):
         self.save_status()
-        self.display_.show(self.week_streak, self.target_ - self.num_activites, self.target_)
+        self.display_.show(self.week_streak, self.target_ - self.num_activities, self.target_)
 
 
 
@@ -97,7 +97,7 @@ class Tracker:
 
 
             # Check if we've hit the target for this week.
-            if self.num_activites >= self.target_:
+            if self.num_activities >= self.target_:
                 self.week_streak += 1
                 self.update()
 
@@ -107,7 +107,7 @@ class Tracker:
             if cur_date == self.next_week:
 
                 # Check if we haven't hit our target and reset.
-                if self.num_activites < self.target_:
+                if self.num_activities < self.target_:
                     self.week_streak = 0
 
                 # Advance the date to a week from now.
