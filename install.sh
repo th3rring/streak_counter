@@ -14,3 +14,5 @@ sudo apt-get install python3-numpy
 sudo pip3 install RPi.GPIO
 sudo pip3 install spidev
 sudo pip3 install  -r requirements.txt
+
+touch src/streak.yaml
