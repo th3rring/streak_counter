@@ -2,6 +2,15 @@ This is an example Flask application showing how you can use stravalib to help
 with getting access tokens.
 To run the streak counter, you first have to sign into the web and authenticate this application with Strava. That means that it's necessarily to launch the Flask web application and use their OAuth2 portal first. Follow these instructions to do so!
 
+Installing
+====================
+
+Clone this repo to your computer and install the necessary tools by executing 'install.sh':
+
+```
+$ ./install.sh
+```
+
 Create a Config File
 ====================
 
