@@ -6,19 +6,25 @@ import datetime
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from stravalib import Client
 
+from display import Display
+
 class Tracker:
 
-    # Strava client to hold information for tracker.
-    client = Client()
+    def __init__(self):
+        # Strava client to hold information for tracker.
+        self.client = Client()
 
-    # Time token expires at
-    token_expires_at = None
+        # Time token expires at
+        self.token_expires_at = None
 
-    # Time in seconds between refreshes.
-    sleep_time_ = 300
+        # Time in seconds between refreshes.
+        self.sleep_time_ = 300
 
-    # Number of target activities per week.
-    target_ = 4
+        # Number of target activities per week.
+        self.target_ = 4
+
+        self.display = Display()
+
 
     def set_expiration(self, token_expires_at):
         self.token_expires_at = token_expires_at
@@ -71,6 +77,7 @@ class Tracker:
                 next_week = cur_date + datetime.timedelta(weeks=1)
 
             # Display num_activities, week streak, etc
+            self.display.show(week_streak, self.target_ - num_activities, self.target)
 
             time.sleep(self.sleep_time_)
 
