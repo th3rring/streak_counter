@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding:utf-8 -*-
 import sys
 import os
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
@@ -22,14 +21,11 @@ try:
     
     epd = epd2in7.EPD()
     
-    '''2Gray(Black and white) display'''
     logging.info("init and Clear")
     epd.init()
     epd.Clear(0xFF)
     
-    font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
     font18 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 18)
-    font35 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 35)
     font96 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 96)
     
     
@@ -38,7 +34,9 @@ try:
     bmp = Image.open(os.path.join(picdir, '2in7_Scale.bmp'))
     Himage2.paste(bmp, (0,0))
     draw = ImageDraw.Draw(Himage2)
-    draw.text((18,75), '00', font = font96, fill = 0)
+    draw.text((10,5), '00', font = font96, fill = 0)
+    draw.text((136,5), '4', font = font96, fill = 0)
+    draw.text((136,100), '3', font = font18, fill = 0)
     epd.display(epd.getbuffer(Himage2))
     time.sleep(20)
     
