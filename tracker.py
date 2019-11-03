@@ -30,7 +30,7 @@ class Tracker:
         self.num_activities = 0
 
         # Filename of save file.
-        self.save_file_ = 'streak.yaml'
+        self.save_file_ = 'streak.pickle'
 
 
     def set_expiration(self, token_expires_at):
