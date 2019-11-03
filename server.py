@@ -77,7 +77,7 @@ class Tracker:
                 next_week = cur_date + datetime.timedelta(weeks=1)
 
             # Display num_activities, week streak, etc
-            self.display.show(week_streak, self.target_ - num_activities, self.target)
+            self.display.show(week_streak, self.target_ - num_activities, self.target_)
 
             time.sleep(self.sleep_time_)
 
