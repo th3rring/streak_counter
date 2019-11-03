@@ -20,7 +20,7 @@ class Display:
     def __init__(self):
         self.epd = epd2in7.EPD()
         
-        logging.info("init and Clear")
+        # logging.info("init and Clear")
         self.epd.init()
         self.epd.Clear(0xFF)
         
@@ -36,15 +36,10 @@ class Display:
         image.paste(self.bmp, (0,0))
 
         draw = ImageDraw.Draw(image)
-        draw.text((10,-12), '{:02d}'.format(weeks), font = font96, fill = 0)
-        draw.text((147,-12), str(to_go), font = font96, fill = 0)
-        draw.text((160,142), str(per_week), font = font18, fill = 0)
+        draw.text((10,-12), '{:02d}'.format(weeks), font = self.font96, fill = 0)
+        draw.text((147,-12), str(to_go), font = self.font96, fill = 0)
+        draw.text((160,142), str(per_week), font = self.font18, fill = 0)
         self.epd.display(self.epd.getbuffer(image))
 
         self.epd.sleep()
-
-
-display = Display()
-display.show(0,4,4)
-
 
