@@ -34,9 +34,9 @@ try:
     bmp = Image.open(os.path.join(picdir, '2in7_Scale.bmp'))
     Himage2.paste(bmp, (0,0))
     draw = ImageDraw.Draw(Himage2)
-    draw.text((10,5), '00', font = font96, fill = 0)
-    draw.text((136,5), '4', font = font96, fill = 0)
-    draw.text((136,100), '3', font = font18, fill = 0)
+    draw.text((10,-12), '00', font = font96, fill = 0)
+    draw.text((147,-12), '4', font = font96, fill = 0)
+    draw.text((160,142), '4', font = font18, fill = 0)
     epd.display(epd.getbuffer(Himage2))
     time.sleep(20)
     
