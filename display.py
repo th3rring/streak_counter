@@ -32,7 +32,7 @@ class Display:
     def show(self, weeks, to_go, per_week):
         self.epd.Clear(0xFF)
 
-        image = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
+        image = Image.new('1', (self.epd.height, self.epd.width), 255)  # 255: clear the frame
         image.paste(self.bmp, (0,0))
 
         draw = ImageDraw.Draw(image)
