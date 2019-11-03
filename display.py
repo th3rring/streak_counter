@@ -41,5 +41,3 @@ class Display:
         draw.text((160,142), str(per_week), font = self.font18, fill = 0)
         self.epd.display(self.epd.getbuffer(image))
 
-        self.epd.sleep()
-
