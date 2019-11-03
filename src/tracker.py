@@ -1,5 +1,6 @@
 import time
 import datetime
+import pickle
 
 from stravalib import Client
 from display import Display
@@ -11,7 +12,7 @@ class Tracker:
         self.client = Client()
 
         # Time token expires at
-        self.token_expires_at = None
+        self.token_expires_at_ = None
 
         # Time in seconds between refreshes.
         self.sleep_time_ = 300
@@ -19,11 +20,46 @@ class Tracker:
         # Number of target activities per week.
         self.target_ = 4
 
-        self.display = Display()
+        # Private display object.
+        self.display_ = Display()
+
+        # Activity tracking variables.
+        self.start_date = datetime.datetime.utcnow().date()
+        self.next_week  = self.start_date + datetime.timedelta(weeks=1)
+        self.week_streak = 0
+        self.num_activities = 0
+
+        # Filename of save file.
+        self.save_file_ = 'streak.pickle'
 
 
     def set_expiration(self, token_expires_at):
-        self.token_expires_at = token_expires_at
+        self.token_expires_at_ = token_expires_at
+
+    def save_status(self):
+        save_obj = {'start_date' : self.start_date, 'next_week' : self.next_week, 
+                'week_streak' : self.week_streak, 'num_activites' : self.num_activites}
+        with open(self.save_file_, 'wb') as save_file:
+            pickel.dump(save_obj, save_file)
+
+    def load_status(self):
+        save_obj = None
+        try:
+            with open(self.save_file_, 'rb') as save_file:
+                save_obj = pickle.load(save_file)
+            self.start_date = save_obj['start_date']
+            self.next_week = save_obj['next_week']
+            self.week_streak = save_obj['week_streak']
+            self.num_activities = save_obj['num_activities']
+        except (OSError, IOError) as e:
+            print('Nothing in this save file, going to save defaults.')
+            save_status()
+
+    def update(self):
+        save_status()
+        self.display_.show(self.week_streak, self.target_ - self.num_activites, self.target_)
+
+
 
     def run(self):
         # Save start date/time
@@ -32,47 +68,51 @@ class Tracker:
         # Check that token won't expire in 12 hours
         # If token needs refreshing, refresh it
         # Sleep for sleep_time
-        start_date = datetime.datetime.utcnow().date()
-        next_week  = start_date + datetime.timedelta(weeks=1)
-        week_streak = 0
+        load_status()
+        update()
         while(True):
             # Refresh token if necessary.
-            if time.time() > self.token_expires_at:
+            if time.time() > self.token_expires_at_:
                 refresh_response = self.client.refresh_access_token(client_id=app.config['STRAVA_CLIENT_ID'],
                                                       client_secret=app.config['STRAVA_CLIENT_SECRET'],
                                                       refresh_token=self.client.refresh_token)
-                self.token_expires_at = refresh_response['expires_at']
+                self.token_expires_at_ = refresh_response['expires_at']
                 print('Refreshing token, new one expires at {}'
                         .format(str(refresh_response['expires_at'])))
 
-            num_activities = len(list(self.client.get_activities(after = start_date.isoformat())))
-
-            for activity in self.client.get_activities(after = start_date.isoformat()):
-                print("{0.name} {0.moving_time}".format(activity))
+            new_activities = len(list(self.client.get_activities(after = self.start_date.isoformat())))
 
             # Handle null return from Strava servers.
-            if not num_activities:
-                num_activities = 0
-            print(num_activities)
+            if not new_activities:
+                new_activities = 0
+            print(new_activities)
+
+            if new_activities != self.num_activities:
+                print("New activities detected!")
+                self.num_activities = new_activities
+                update()
+
+            for activity in self.client.get_activities(after = self.start_date.isoformat()):
+                print("{0.name} {0.moving_time}".format(activity))
+
 
             # Check if we've hit the target for this week.
-            if num_activities >= self.target_:
-                week_streak += 1
+            if self.num_activites >= self.target_:
+                self.week_streak += 1
+                update()
 
             cur_date = datetime.datetime.utcnow().date()
 
             # Check if it's next week.
-            if cur_date == next_week:
+            if cur_date == self.next_week:
 
                 # Check if we haven't hit our target and reset.
-                if num_activities < self.target_:
-                    week_streak = 0
+                if self.num_activites < self.target_:
+                    self.week_streak = 0
 
                 # Advance the date to a week from now.
-                start_date = cur_date
-                next_week = cur_date + datetime.timedelta(weeks=1)
-
-            # Display num_activities, week streak, etc
-            self.display.show(week_streak, self.target_ - num_activities, self.target_)
+                self.start_date = cur_date
+                self.next_week = cur_date + datetime.timedelta(weeks=1)
+                update()
 
             time.sleep(self.sleep_time_)
