@@ -16,10 +16,10 @@ $ ./install.sh
 Create a Config File
 ====================
 
-Create a file -- for example `settings.cfg`:
+Create a file in src directory -- for example `settings.cfg`:
 
 ```
-$ vim settings.cfg
+$ vim src/settings.cfg
 ```
 Paste in your Strava client ID and secret:
 

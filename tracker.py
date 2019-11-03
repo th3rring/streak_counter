@@ -51,10 +51,13 @@ class Tracker:
             self.next_week = save_obj['next_week']
             self.week_streak = save_obj['week_streak']
             self.num_activities = save_obj['num_activities']
-
         except (OSError, IOError) as e:
             print('Nothing in this save file, going to save defaults.')
             save_status()
+
+    def update(self):
+        save_status()
+        self.display_.show(self.week_streak, self.target_ - self.num_activites, self.target_)
 
 
 
@@ -66,6 +69,7 @@ class Tracker:
         # If token needs refreshing, refresh it
         # Sleep for sleep_time
         load_status()
+        update()
         while(True):
             # Refresh token if necessary.
             if time.time() > self.token_expires_at_:
@@ -76,19 +80,26 @@ class Tracker:
                 print('Refreshing token, new one expires at {}'
                         .format(str(refresh_response['expires_at'])))
 
-            self.num_activites = len(list(self.client.get_activities(after = self.start_date.isoformat())))
+            new_activities = len(list(self.client.get_activities(after = self.start_date.isoformat())))
+
+            # Handle null return from Strava servers.
+            if not new_activities:
+                new_activities = 0
+            print(new_activities)
+
+            if new_activities != self.num_activities:
+                print("New activities detected!")
+                self.num_activities = new_activities
+                update()
 
             for activity in self.client.get_activities(after = self.start_date.isoformat()):
                 print("{0.name} {0.moving_time}".format(activity))
 
-            # Handle null return from Strava servers.
-            if not self.num_activites:
-                self.num_activites = 0
-            print(self.num_activites)
 
             # Check if we've hit the target for this week.
             if self.num_activites >= self.target_:
                 self.week_streak += 1
+                update()
 
             cur_date = datetime.datetime.utcnow().date()
 
@@ -102,8 +113,6 @@ class Tracker:
                 # Advance the date to a week from now.
                 self.start_date = cur_date
                 self.next_week = cur_date + datetime.timedelta(weeks=1)
-
-            # Display num_activities, week streak, etc
-            self.display_.show(self.week_streak, self.target_ - self.num_activites, self.target_)
+                update()
 
             time.sleep(self.sleep_time_)
