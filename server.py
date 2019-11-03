@@ -1,6 +1,7 @@
 #!flask/bin/python
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from tracker import Tracker
+from stravalib import Client
 
 app = Flask(__name__)
 app.config.from_envvar('APP_SETTINGS')
