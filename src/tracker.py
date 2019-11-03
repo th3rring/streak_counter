@@ -30,7 +30,7 @@ class Tracker:
         self.num_activities = 0
 
         # Filename of save file.
-        self.save_file_ = 'streak.pickle'
+        self.save_file_ = 'streak.yaml'
 
 
     def set_expiration(self, token_expires_at):
@@ -53,10 +53,10 @@ class Tracker:
             self.num_activities = save_obj['num_activities']
         except (OSError, IOError) as e:
             print('Nothing in this save file, going to save defaults.')
-            save_status()
+            self.save_status()
 
     def update(self):
-        save_status()
+        self.save_status()
         self.display_.show(self.week_streak, self.target_ - self.num_activites, self.target_)
 
 
@@ -68,8 +68,8 @@ class Tracker:
         # Check that token won't expire in 12 hours
         # If token needs refreshing, refresh it
         # Sleep for sleep_time
-        load_status()
-        update()
+        self.load_status()
+        self.update()
         while(True):
             # Refresh token if necessary.
             if time.time() > self.token_expires_at_:
@@ -90,7 +90,7 @@ class Tracker:
             if new_activities != self.num_activities:
                 print("New activities detected!")
                 self.num_activities = new_activities
-                update()
+                self.update()
 
             for activity in self.client.get_activities(after = self.start_date.isoformat()):
                 print("{0.name} {0.moving_time}".format(activity))
@@ -99,7 +99,7 @@ class Tracker:
             # Check if we've hit the target for this week.
             if self.num_activites >= self.target_:
                 self.week_streak += 1
-                update()
+                self.update()
 
             cur_date = datetime.datetime.utcnow().date()
 
@@ -113,6 +113,6 @@ class Tracker:
                 # Advance the date to a week from now.
                 self.start_date = cur_date
                 self.next_week = cur_date + datetime.timedelta(weeks=1)
-                update()
+                self.update()
 
             time.sleep(self.sleep_time_)
