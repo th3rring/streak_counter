@@ -40,7 +40,7 @@ class Tracker:
         save_obj = {'start_date' : self.start_date, 'next_week' : self.next_week, 
                 'week_streak' : self.week_streak, 'num_activities' : self.num_activities}
         with open(self.save_file_, 'wb') as save_file:
-            pickel.dump(save_obj, save_file)
+            pickle.dump(save_obj, save_file)
 
     def load_status(self):
         save_obj = None
