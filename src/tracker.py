@@ -51,7 +51,7 @@ class Tracker:
             self.next_week = save_obj['next_week']
             self.week_streak = save_obj['week_streak']
             self.num_activities = save_obj['num_activities']
-        except (OSError, IOError) as e:
+        except (OSError, IOError, EOFError) as e:
             print('Nothing in this save file, going to save defaults.')
             self.save_status()
 
