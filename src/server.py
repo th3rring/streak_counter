@@ -35,6 +35,7 @@ def logged_in():
                                                       client_secret=app.config['STRAVA_CLIENT_SECRET'],
                                                       code=code)
         tracker.set_expiration(access_token['expires_at'])
+        tracker.set_client_info(app.config['STRAVA_CLIENT_ID'], app.config['STRAVA_CLIENT_SECRET'])
         strava_athlete = tracker.client.get_athlete()
 
 

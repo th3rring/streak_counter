@@ -11,8 +11,12 @@ class Tracker:
         # Strava client to hold information for tracker.
         self.client = Client()
 
-        # Time token expires at
+        # Time token expires at.
         self.token_expires_at_ = None
+
+        # Client information.
+        self.client_id = None
+        self.client_secret = None
 
         # Time in seconds between refreshes.
         self.sleep_time_ = 300
@@ -35,6 +39,10 @@ class Tracker:
 
     def set_expiration(self, token_expires_at):
         self.token_expires_at_ = token_expires_at
+
+    def set_client_info(self, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
 
     def save_status(self):
         save_obj = {'start_date' : self.start_date, 'next_week' : self.next_week, 
@@ -73,8 +81,8 @@ class Tracker:
         while(True):
             # Refresh token if necessary.
             if time.time() > self.token_expires_at_:
-                refresh_response = self.client.refresh_access_token(client_id=app.config['STRAVA_CLIENT_ID'],
-                                                      client_secret=app.config['STRAVA_CLIENT_SECRET'],
+                refresh_response = self.client.refresh_access_token(client_id=self.client_id,
+                                                      client_secret=self.client_secret,
                                                       refresh_token=self.client.refresh_token)
                 self.token_expires_at_ = refresh_response['expires_at']
                 print('Refreshing token, new one expires at {}'
